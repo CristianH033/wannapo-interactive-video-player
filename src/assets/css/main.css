@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+  }
+
+  body {
+    @apply w-screen h-dvh;
+    @apply overflow-x-hidden overflow-y-hidden;
+  }
+}
+
+@layer components {
+}
+
+@layer utilities {
+}

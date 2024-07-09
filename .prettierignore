@@ -1,0 +1,17 @@
+node_modules
+.DS_Store
+dist
+dist-ssr
+coverage
+*.local
+
+test-results/
+playwright-report/
+
+package-lock.json
+npm-debug.log
+yarn-error.log
+yarn.lock
+
+.gitignore
+.git
