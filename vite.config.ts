@@ -20,8 +20,8 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp}']
       },
       manifest: {
-        name: 'Vue + Vite App',
-        short_name: 'Vue + Vite App',
+        name: 'Wannapo Interactive Video Player',
+        short_name: 'Wannapo Interactive Video Player',
         description: 'Vue + Vite + Pinia + PWA App',
         theme_color: '#000000',
         icons: [
