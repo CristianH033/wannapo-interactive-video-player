@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/wannapo-interactive-video-player/sw.js', { scope: '/wannapo-interactive-video-player/' })})}
