@@ -1,0 +1,58 @@
+<script setup lang="ts">
+import { useAppStore } from '@/stores/app'
+import { useFileDialog } from '@vueuse/core'
+import Button from './Button.vue'
+import SolarPlayLineDuotone from '~icons/solar/play-line-duotone'
+import SolarFolderOpenLineDuotone from '~icons/solar/folder-open-line-duotone'
+
+const appStore = useAppStore()
+
+const { files, open, reset, onChange } = useFileDialog({
+  accept: 'video/mp4,video/x-m4v,video/*', // Set to accept only video files
+  directory: true // Select directories instead of files if set true
+})
+
+const openFolder = () => {
+  open()
+}
+
+onChange((files) => {
+  /** do something with files */
+  if (files) {
+    appStore.setFileList(files)
+  }
+})
+</script>
+
+<template>
+  <div class="w-full flex flex-col gap-8 justify-center items-center">
+    <Button v-if="appStore.videoListIsEmpty" @click="openFolder">
+      <SolarFolderOpenLineDuotone class="w-8 h-8" />
+      <span>Seleccionar Carpeta</span>
+    </Button>
+    <div v-else class="w-full grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8">
+      <div
+        v-for="videoFile in appStore.getVideoFileListInfo"
+        class="rounded-lg border overflow-hidden flex flex-col justify-between cursor-pointer hover:shadow-foreground-50/30 hover:scale-105 hover:shadow-2xl active:scale-95 transition"
+        :key="videoFile.name"
+        @click="appStore.selectVideoToPlay(videoFile)"
+      >
+        <div
+          class="aspect-video flex flex-col justify-center items-center"
+          :style="{
+            backgroundImage: `url(${videoFile.thumbnail})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }"
+        >
+          <SolarPlayLineDuotone class="w-16 h-16" />
+        </div>
+        <div class="w-full p-4">
+          <p>{{ videoFile.name }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style lang="css" scoped></style>

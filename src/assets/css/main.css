@@ -9,10 +9,53 @@
   body {
     @apply w-screen h-dvh;
     @apply overflow-x-hidden overflow-y-hidden;
+    @apply bg-background text-foreground;
   }
 }
 
 @layer components {
+  .btn {
+    @apply cursor-pointer rounded-md px-5 py-3 border text-foreground;
+    @apply disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  /* 
+    primary
+    secondary
+    outline
+    ghost
+    link 
+  */
+
+  .btn-primary {
+    @apply bg-primary border-foreground text-foreground;
+    @apply hover:enabled:bg-background-900;
+    @apply active:enabled:bg-background-800;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary border-foreground text-foreground;
+    @apply hover:enabled:bg-secondary-400;
+    @apply active:enabled:bg-secondary-200;
+  }
+
+  .btn-outline {
+    @apply bg-transparent border-foreground text-foreground;
+    @apply hover:enabled:bg-background-800/40;
+    @apply active:enabled:bg-background-800/60;
+  }
+
+  .btn-ghost {
+    @apply bg-background-900 border-background-900 text-foreground;
+    @apply hover:enabled:bg-background-800/90;
+    @apply active:enabled:bg-background-800;
+  }
+
+  .btn-link {
+    @apply bg-transparent border-transparent text-foreground;
+    @apply hover:enabled:bg-transparent;
+    @apply active:enabled:bg-background-900;
+  }
 }
 
 @layer utilities {
