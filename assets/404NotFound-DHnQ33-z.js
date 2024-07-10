@@ -1,1 +1,0 @@
-import{_ as t}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{o as e,c as o}from"./index-C-TtWyBe.js";const c={},n={class:"text-center text-3xl"};function r(s,_){return e(),o("h1",n,"Page Not Found")}const d=t(c,[["render",r]]);export{d as default};

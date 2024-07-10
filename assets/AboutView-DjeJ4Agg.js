@@ -1,0 +1,1 @@
+import{_ as e,o as t,c}from"./index-C_2SVmuS.js";const o={},s={class:"text-center text-3xl"};function n(a,r){return t(),c("h1",s,"This is an about page")}const i=e(o,[["render",n]]);export{i as default};
