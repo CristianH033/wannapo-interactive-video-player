@@ -22,7 +22,7 @@ export default defineConfig({
       manifest: {
         name: 'Wannapo Interactive Video Player',
         short_name: 'Wannapo Interactive Video Player',
-        description: 'Vue + Vite + Pinia + PWA App',
+        description: 'Wannapo Interactive Video Player PWA App',
         theme_color: '#000000',
         icons: [
           {

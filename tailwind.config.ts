@@ -22,6 +22,12 @@ export default {
       containers: {
         '2xs': '16rem'
       },
+      dropShadow: {
+        '3xl': '0 0 40px rgba(0, 0, 0, 0.5)'
+      },
+      boxShadow: {
+        '3xl': '0 0 50px -20px rgba(0, 0, 0, 0.5)'
+      },
       colors: {
         primary: {
           DEFAULT: '#000000',

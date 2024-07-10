@@ -38,14 +38,14 @@ onChange((files) => {
         @click="appStore.selectVideoToPlay(videoFile)"
       >
         <div
-          class="aspect-video flex flex-col justify-center items-center"
+          class="aspect-video relative"
           :style="{
             backgroundImage: `url(${videoFile.thumbnail})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center'
           }"
         >
-          <SolarPlayLineDuotone class="w-16 h-16" />
+          <SolarPlayLineDuotone class="w-8 h-8 absolute bottom-2 left-2" />
         </div>
         <div class="w-full p-4">
           <p>{{ videoFile.name }}</p>

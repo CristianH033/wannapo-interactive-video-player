@@ -22,8 +22,20 @@ const appStore = useAppStore()
       <img class="w-32" src="@/assets/img/logos/Mesa de trabajo 1 copia 4-100.jpg" alt="" />
       <img class="w-32" src="@/assets/img/logos/Mesa de trabajo 1 copia-100.jpg" alt="" />
     </footer>
-    <Modal v-if="appStore.videoFileToPlay" />
+    <Transition name="fade" mode="out-in">
+      <Modal v-if="appStore.videoFileToPlay" />
+    </Transition>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 300ms ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

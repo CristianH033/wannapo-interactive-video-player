@@ -41,17 +41,24 @@ watch(ended, () => {
 </script>
 
 <template>
-  <video class="aspect-video" ref="videoElement" />
-  <div class="w-full h-full p-8 flex flex-row justify-center items-center gap-8">
-    <button @click="playing = !playing">
-      <SolarPlayBold class="w-12 h-12" v-if="!playing" />
-      <SolarPauseBold class="w-12 h-12" v-else />
-    </button>
-    <button @click="appStore.clearVideoToPlay">
-      <SolarStopBold class="w-12 h-12" />
-    </button>
-    <div class="w-full text-end">
-      <span>{{ valueToReadableTime(currentTime) }} / {{ valueToReadableTime(duration) }}</span>
+  <div class="w-full flex flex-col">
+    <video class="aspect-video" ref="videoElement" />
+    <div class="w-full flex flex-col gap-6 p-6">
+      <div class="w-full">
+        <p class="text-2xl">{{ video?.name }}</p>
+      </div>
+      <div class="w-full h-full flex flex-row justify-center items-center gap-6">
+        <button @click="playing = !playing">
+          <SolarPlayBold class="w-12 h-12" v-if="!playing" />
+          <SolarPauseBold class="w-12 h-12" v-else />
+        </button>
+        <button @click="appStore.clearVideoToPlay">
+          <SolarStopBold class="w-12 h-12" />
+        </button>
+        <div class="w-full text-end">
+          <span>{{ valueToReadableTime(currentTime) }} / {{ valueToReadableTime(duration) }}</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
