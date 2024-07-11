@@ -1,0 +1,1 @@
+import{_ as e,o as t,c as o}from"./index-DB84zVmW.js";const c={},n={class:"text-center text-3xl"};function s(r,_){return t(),o("h1",n,"Page Not Found")}const d=e(c,[["render",s]]);export{d as default};
