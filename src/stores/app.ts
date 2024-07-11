@@ -1,15 +1,9 @@
+import { generateVideoThumbnail } from '@/lib/utils/video.utils'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import thumb1 from '@/assets/img/thumbs/1.png'
-import thumb2 from '@/assets/img/thumbs/2.png'
-import thumb3 from '@/assets/img/thumbs/3.png'
-import thumb4 from '@/assets/img/thumbs/4.png'
-import thumb5 from '@/assets/img/thumbs/5.png'
-import thumb6 from '@/assets/img/thumbs/6.png'
-import thumb7 from '@/assets/img/thumbs/7.png'
-import thumb8 from '@/assets/img/thumbs/8.png'
 
-const ACCEPTED_EXTENSIONS = ['mp4', 'm4v', 'mov', 'avi', 'mkv', 'webm', 'mpg', 'mpeg', 'wmv']
+const ACCEPTED_VIDEO_EXTENSIONS = ['mp4', 'm4v', 'mov', 'avi', 'mkv', 'webm', 'mpg', 'mpeg', 'wmv']
+const ACCEPTED_IMG_EXTENSIONS = ['png', 'jpg', 'jpeg', 'webp']
 
 export interface VideoFileInfo {
   file?: File
@@ -21,95 +15,67 @@ export interface VideoFileInfo {
 
 export const useAppStore = defineStore('app', () => {
   const appName = ref<string>('Wannapo Interactive Video Player')
-
+  const isLoading = ref<boolean>(false)
   const fileList = ref<FileList | undefined>(undefined)
-
-  const videoFilesInfo = ref([
-    {
-      name: 'Jenny Herrera',
-      fileName: 'Poder Diversidad - Jenny Herrera_Alkosto 3m.mp4',
-      thumbnail: thumb1
-    },
-    {
-      name: 'Coronel Sandra Mora',
-      fileName: 'Poder Diversidad Coronel Sandra Mora 3min.mp4',
-      thumbnail: thumb2
-    },
-    {
-      name: 'Jose Daniel Monsalve',
-      fileName: 'Poder Diversidad Jose Daniel Monsalve 3min 4k.mp4',
-      thumbnail: thumb3
-    },
-    {
-      name: 'Lilibeth Rubio',
-      fileName: 'Poder Diversidad Lilibeth Rubio 3min Exito 4k.mp4',
-      thumbnail: thumb4
-    },
-    {
-      name: 'Manuel Londono',
-      fileName: 'Poder Diversidad Manuel Londono EPM 3min 4k.mp4',
-      thumbnail: thumb5
-    },
-    {
-      name: 'Maria Victoria Vega',
-      fileName: 'Poder Diversidad Maria Victoria Vega 3min Diageo 4k.mp4',
-      thumbnail: thumb6
-    },
-    {
-      name: 'Sandra Hinestroza',
-      fileName: 'Poder Diversidad Sandra Hinestroza 3min 4k.mp4',
-      thumbnail: thumb7
-    },
-    {
-      name: 'Sebastian Giraldo',
-      fileName: 'Poder Diversidad Sebastian Giraldo  Casa Carlota 3m_1.mp4',
-      thumbnail: thumb8
-    }
-  ])
-
+  const videoFilesInfo = ref<VideoFileInfo[]>([])
   const videoFileToPlay = ref<VideoFileInfo | undefined>(undefined)
 
   const getAppName = computed(() => {
     return appName
   })
 
-  const getVideoFileList = computed(() => {
-    return Array.from(fileList.value || []).filter((file) => {
-      return (
-        file.size > 0 && ACCEPTED_EXTENSIONS.includes(file.name.split('.').pop()?.toLowerCase()!)
-      )
-    })
-  })
-
   const getVideoFileListInfo = computed((): VideoFileInfo[] => {
-    return getVideoFileList.value
-      .filter((file) => {
-        // if file name is in videoFilesInfo array filename
-        return videoFilesInfo.value.some((videoFile) => videoFile.fileName === file.name)
-      })
-      .map((file) => {
-        const videoFileInfo = videoFilesInfo.value.find(
-          (videoFile) => videoFile.fileName === file.name
-        )
-
-        return {
-          url: getVideoUrl(file),
-          file: file as File,
-          ...videoFileInfo
-        }
-      })
+    return videoFilesInfo.value
   })
 
-  const videoListIsEmpty = computed(() => {
-    return getVideoFileList.value.length === 0
+  const videoFileListInfoIsEmpty = computed(() => {
+    return getVideoFileListInfo.value.length === 0
   })
 
   const setAppName = (name: string) => {
     appName.value = name
   }
 
-  const setFileList = (files: FileList | undefined) => {
+  const setFileList = async (files: FileList | undefined) => {
+    isLoading.value = true
+
+    const videoFiles = getVideoFiles(files)
+    const imageFiles = getImageFiles(files)
+
+    const videoFilesNames = videoFiles.map((file) => file.name.split('.').slice(0, -1).join('.'))
+    const imageFilesNames = imageFiles.map((file) => file.name.split('.').slice(0, -1).join('.'))
+
+    const matchedFilesNames = videoFilesNames.filter((name) => imageFilesNames.includes(name))
+
     fileList.value = files
+    videoFilesInfo.value = await (() =>
+      Promise.all(
+        videoFiles.map(async (file) => {
+          let thumbnailUrl = ''
+
+          if (matchedFilesNames.includes(file.name.split('.').slice(0, -1).join('.'))) {
+            thumbnailUrl = URL.createObjectURL(
+              imageFiles.find(
+                (imageFile) =>
+                  imageFile.name.split('.').slice(0, -1).join('.') ===
+                  file.name.split('.').slice(0, -1).join('.')
+              ) as File
+            )
+          } else {
+            thumbnailUrl = await generateVideoThumbnail(file, 3)
+          }
+
+          return {
+            file,
+            name: file.name.split('.').slice(0, -1).join('.'),
+            fileName: file.name,
+            thumbnail: thumbnailUrl,
+            url: URL.createObjectURL(file)
+          }
+        })
+      ))()
+
+    isLoading.value = false
   }
 
   const selectVideoToPlay = (videoFile: VideoFileInfo) => {
@@ -120,17 +86,33 @@ export const useAppStore = defineStore('app', () => {
     videoFileToPlay.value = undefined
   }
 
-  const getVideoUrl = (file: File): string => {
-    return URL.createObjectURL(file)
+  const getVideoFiles = (files: FileList | undefined): File[] => {
+    return Array.from(files || []).filter((file) => {
+      return (
+        file.size > 0 &&
+        ACCEPTED_VIDEO_EXTENSIONS.includes(file.name.split('.').pop()?.toLowerCase()!)
+      )
+    })
+  }
+
+  const getImageFiles = (files: FileList | undefined): File[] => {
+    return Array.from(files || []).filter((file) => {
+      return (
+        file.size > 0 &&
+        ACCEPTED_IMG_EXTENSIONS.includes(file.name.split('.').pop()?.toLowerCase()!)
+      )
+    })
   }
 
   return {
     appName,
+    isLoading,
+    fileList,
+    videoFilesInfo,
     videoFileToPlay,
     getAppName,
-    getVideoFileList,
     getVideoFileListInfo,
-    videoListIsEmpty,
+    videoFileListInfoIsEmpty,
     setAppName,
     setFileList,
     selectVideoToPlay,

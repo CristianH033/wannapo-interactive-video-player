@@ -4,10 +4,11 @@ import { useFileDialog } from '@vueuse/core'
 import Button from './Button.vue'
 import SolarPlayLineDuotone from '~icons/solar/play-line-duotone'
 import SolarFolderOpenLineDuotone from '~icons/solar/folder-open-line-duotone'
+import SvgSpinnersBlocksScale from '~icons/svg-spinners/blocks-scale'
 
 const appStore = useAppStore()
 
-const { files, open, reset, onChange } = useFileDialog({
+const { open, onChange } = useFileDialog({
   accept: 'video/mp4,video/x-m4v,video/*', // Set to accept only video files
   directory: true // Select directories instead of files if set true
 })
@@ -26,9 +27,10 @@ onChange((files) => {
 
 <template>
   <div class="w-full flex flex-col gap-8 justify-center items-center">
-    <Button v-if="appStore.videoListIsEmpty" @click="openFolder">
-      <SolarFolderOpenLineDuotone class="w-8 h-8" />
-      <span>Seleccionar Carpeta</span>
+    <Button v-if="appStore.videoFileListInfoIsEmpty" @click="openFolder">
+      <SvgSpinnersBlocksScale v-if="appStore.isLoading" class="w-8 h-8" />
+      <SolarFolderOpenLineDuotone v-else class="w-8 h-8" />
+      <span>{{ appStore.isLoading ? 'Cargando...' : 'Seleccionar Carpeta' }}</span>
     </Button>
     <div v-else class="w-full grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8">
       <div
@@ -52,6 +54,9 @@ onChange((files) => {
         </div>
       </div>
     </div>
+    <!-- <div v-if="!appStore.videoFileListInfoIsEmpty">
+      <Button @click="reset">Recargar Lista</Button>
+    </div> -->
   </div>
 </template>
 
